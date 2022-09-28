@@ -1,12 +1,13 @@
 import pygame
 from settings import tile_size
 
+
 class Player(pygame.sprite.Sprite):
     def __init__(self, pos):
         super().__init__()
-        self.image = pygame.Surface((tile_size, tile_size))
+        self.image = pygame.Surface((32 , tile_size))
         self.image.fill('red')
-        self.rect = self.image.get_rect(topleft = pos)
+        self.rect = self.image.get_rect(topleft=pos)
 
         # player movement
         self.direction = pygame.math.Vector2(0, 0)
