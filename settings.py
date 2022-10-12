@@ -11,11 +11,24 @@
 #   '    XXXX  XXXXXX  XX  XXXX  ',
 #  'XXXXXXXX  XXXXXX  XX  XXXX  ']
 
-level_map = [
+start_map = [
 '                                              ',
 '                                              ',
 '                                              ',
 '     P                                        ',
+'                                              ',
+'              XX                              ',
+'            XX                                ',
+'       X  XXXX    XX  XX                      ',
+'       X  XXXX    XX  XXX                     ',
+'    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX  ',
+'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX  ']
+
+level_map = [
+'                                              ',
+'                                              ',
+'                                              ',
+'                                              ',
 '                                              ',
 '              XX                              ',
 '            XX                                ',

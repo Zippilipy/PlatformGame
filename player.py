@@ -4,15 +4,19 @@ from settings import tile_size
 class Player(pygame.sprite.Sprite):
     def __init__(self, pos):
         super().__init__()
-        self.image = pygame.Surface((tile_size, tile_size))
+        self.image = pygame.Surface((tile_size/2, tile_size))
         self.image.fill('red')
         self.rect = self.image.get_rect(topleft = pos)
 
         # player movement
         self.direction = pygame.math.Vector2(0, 0)
         self.speed = 8
-        self.gravity = 0.8
-        self.jump_speed = -16
+        self.gravity = 1
+        self.jump_speed = -20
+
+        # status
+        self.status = 'idle'
+        self.on_ground = False
 
     def get_input(self):
         keys = pygame.key.get_pressed()
@@ -23,8 +27,19 @@ class Player(pygame.sprite.Sprite):
             self.direction.x = -1
         else:
             self.direction.x = 0
-        if keys[pygame.K_UP]:
+        if keys[pygame.K_UP] and self.on_ground:
             self.jump()
+
+    def get_status(self):
+        if self.direction.y < 0:
+            self.status = 'jump'
+        elif self.direction.y > 1.2:
+            self.status = 'fall'
+        else:
+            if self.direction.x == 0:
+                self.status = 'idle'
+            else:
+                self.status = 'run'
 
     def apply_gravity(self):
         self.direction.y += self.gravity
@@ -35,3 +50,4 @@ class Player(pygame.sprite.Sprite):
 
     def update(self):
         self.get_input()
+        self.get_status()

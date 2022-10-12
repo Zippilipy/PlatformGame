@@ -4,12 +4,13 @@ from settings import tile_size, screen_width, level_map
 from player import Player
 
 class Level:
-    def __init__(self, level_data, surface):
+    def __init__(self, start_data, level_data, surface):
         self.display_surface = surface
-        self.setup_level(level_data)
+        self.setup_level(start_data)
 
+        self.continue_level = level_data
         self.world_shift = 0
-        self.realxpos = 320
+        self.realxpos = tile_size*4.5
 
     def setup_level(self, layout):
         self.tiles = pygame.sprite.Group()
@@ -62,8 +63,6 @@ class Level:
                     player.rect.right = sprite.rect.left
                     self.realxpos -= player.direction.x * player.speed
 
-        self.get_state(player.rect.x, self.realxpos, player.rect.y, level_map)
-
 
     def vertical_movement_collision(self):
         player = self.player.sprite
@@ -74,9 +73,13 @@ class Level:
                 if player.direction.y > 0:
                     player.rect.bottom = sprite.rect.top
                     player.direction.y = 0
+                    player.on_ground = True
                 elif player.direction.y < 0:
                     player.rect.top = sprite.rect.bottom
                     player.direction.y = 0
+
+        if player.on_ground and player.direction.y < 0 or player.direction.y > 1.2:
+            player.on_ground = False
 
     def get_state(self, xposonscreen, xposingame, yposingame, layout):
         start = int((xposingame - xposonscreen)/tile_size)
@@ -84,20 +87,20 @@ class Level:
         ytile = int(((yposingame)/tile_size))
         xtile = int(round((xposingame)/tile_size))
         array = []
-        teststring = ''
+        arraystring = ''
         row_index = 0
         col_index = start
         for row in layout:
             for col in row:
                 if(col_index >= start and col_index <= end):
                     if(row_index == ytile and col_index == xtile):
-                        teststring += 'P'
+                        arraystring += 'P'
                     else:
-                        teststring += col
+                        arraystring += col
                 col_index += 1
-            array.append(teststring)
-            print(teststring)
-            teststring = ''
+            array.append(arraystring)
+            print(arraystring)
+            arraystring = ''
             # print(f'{row_index},{col_index}:{col}')
             row_index += 1
             col_index = 0
@@ -113,3 +116,6 @@ class Level:
         self.horizontal_movement_collision()
         self.vertical_movement_collision()
         self.player.draw(self.display_surface)
+        self.get_state(self.player.sprite.rect.x, self.realxpos, self.player.sprite.rect.y, self.continue_level)
+        print(self.player.sprite.status)
+
