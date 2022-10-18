@@ -1,7 +1,10 @@
 import pygame
 from tiles import Tile
-from settings import tile_size, screen_width, level_map
+from settings import tile_size, screen_width, level_map, start_map, screen_height
 from player import Player
+import torch
+from collections import deque
+import numpy as np
 
 class Level:
     def __init__(self, start_data, level_data, surface):
@@ -11,6 +14,11 @@ class Level:
         self.continue_level = level_data
         self.world_shift = 0
         self.realxpos = tile_size*4.5
+        self.highestx = tile_size*4.5
+        self.over = False
+        self.frames = 0
+        self.reward = 0
+        self.over = False
 
     def setup_level(self, layout):
         self.tiles = pygame.sprite.Group()
@@ -105,6 +113,34 @@ class Level:
             row_index += 1
             col_index = 0
         #print(array)
+        return array
+
+    def givereward(self):
+        if self.realxpos > self.highestx:
+            self.highestx = self.realxpos
+            self.reward += 1
+        elif self.realxpos < self.highestx and self.frames > self.realxpos + 1000:
+            self.over = True
+            self.reward = -10
+        elif self.player.sprite.rect.y >= screen_height:
+            self.over = True
+            self.reward = -10
+
+    def input(self, action):
+        self.player.sprite.get_input(action)
+        self.givereward()
+        return self.reward, self.over, self.realxpos
+
+
+    def restart(self):
+        if self.over:
+            self.setup_level(start_map)
+            self.world_shift = 0
+            self.realxpos = tile_size * 4.5
+            self.highestx = tile_size * 4.5
+            self.frames = 0
+            self.over = False
+            self.reward = 0
 
 
     def run(self):
@@ -117,5 +153,9 @@ class Level:
         self.vertical_movement_collision()
         self.player.draw(self.display_surface)
         self.get_state(self.player.sprite.rect.x, self.realxpos, self.player.sprite.rect.y, self.continue_level)
+        self.givereward()
+        self.restart()
         print(self.player.sprite.status)
-
+        self.frames += 1
+        print(self.reward)
+        print(self.over)

@@ -2,7 +2,10 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/../MarioPython/.idea/MarioPython.iml" filepath="$PROJECT_DIR$/../MarioPython/.idea/MarioPython.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/PlatformGame.iml" filepath="$PROJECT_DIR$/.idea/PlatformGame.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../RLCourse/.idea/RLCourse.iml" filepath="$PROJECT_DIR$/../RLCourse/.idea/RLCourse.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../SnekAI/.idea/SnekAI.iml" filepath="$PROJECT_DIR$/../SnekAI/.idea/SnekAI.iml" />
     </modules>
   </component>
 </project>
