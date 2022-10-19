@@ -13,12 +13,11 @@ class Level:
 
         self.continue_level = level_data
         self.world_shift = 0
-        self.realxpos = tile_size*4.5
-        self.highestx = tile_size*4.5
+        self.realxpos = tile_size*2.5
+        self.highestx = tile_size*2.5
         self.over = False
         self.frames = 0
         self.reward = 0
-        self.over = False
 
     def setup_level(self, layout):
         self.tiles = pygame.sprite.Group()
@@ -126,8 +125,8 @@ class Level:
                 col_index += 1
             row_index += 1
             col_index = 0
-        print(array)
-        print(len(array))
+        #print(array)
+        #print(len(array))
 
         return array
 
@@ -135,7 +134,7 @@ class Level:
         if self.realxpos > self.highestx:
             self.highestx = self.realxpos
             self.reward += 1
-        elif self.realxpos < self.highestx and self.frames > self.realxpos + 1000:
+        elif self.realxpos < self.highestx and self.frames > self.realxpos + 120:
             self.over = True
             self.reward = -10
         elif self.player.sprite.rect.y >= screen_height:
@@ -145,18 +144,17 @@ class Level:
     def input(self, action):
         self.player.sprite.get_input(action)
         self.givereward()
-        return self.reward, self.over, self.realxpos
+        return self.reward, self.over, self.highestx
 
 
     def restart(self):
-        if self.over:
-            self.setup_level(start_map)
-            self.world_shift = 0
-            self.realxpos = tile_size * 4.5
-            self.highestx = tile_size * 4.5
-            self.frames = 0
-            self.over = False
-            self.reward = 0
+        self.setup_level(start_map)
+        self.world_shift = 0
+        self.realxpos = tile_size * 4.5
+        self.highestx = tile_size * 4.5
+        self.frames = 0
+        self.over = False
+        self.reward = 0
 
 
     def run(self):
@@ -168,7 +166,10 @@ class Level:
         self.horizontal_movement_collision()
         self.vertical_movement_collision()
         self.player.draw(self.display_surface)
-        print(self.player.sprite.status)
+        #print(self.player.sprite.status)
         self.frames += 1
-        print(self.reward)
+        print(self.frames)
+        print(self.realxpos)
         print(self.over)
+        #print(self.reward)
+        #print(self.over)

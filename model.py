@@ -4,7 +4,7 @@ import torch.optim as optim
 import torch.nn.functional as F
 import os
 
-
+torch.autograd.set_detect_anomaly(True)
 class Linear_QNet(nn.Module):
     def __init__(self, input_size, hidden_size, output_size):
         super().__init__()
@@ -54,10 +54,9 @@ class QTrainer:
             if not done[idx]:
                 Q_new = reward[idx] + self.gamma * torch.max(self.model(next_state[idx]))
 
-            target[idx][torch.argmax(action).item()] = Q_new
+            target[idx][min(torch.argmax(action).item(), len(target[idx])-1)] = Q_new
 
-            self.optimizer.zero_grad()
-            loss = self.criterion(target, pred)
-            loss.backward()
-
-            self.optimizer.step()
+        self.optimizer.zero_grad()
+        loss = self.criterion(target, pred)
+        loss.backward()
+        self.optimizer.step()

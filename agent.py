@@ -9,7 +9,7 @@ from helper import plot
 from settings import start_map, level_map, screen_width, screen_height
 
 
-MAX_MEMORY = 100_000
+MAX_MEMORY = 100000
 BATCH_SIZE = 1000
 LR = 0.001
 
@@ -37,7 +37,19 @@ class Agent:
         else:
             mini_sample = self.memory
 
+
+        new_memory = []
+
+        memory_count = 1
+        for memory in self.memory:
+            if memory_count > len(self.memory) - 10:
+                new_memory.append(memory)
+            memory_count += 1
+
+        mini_sample = new_memory
+
         states, actions, rewards, next_states, dones = zip(*mini_sample)
+
         self.trainer.train_step(states, actions, rewards, next_states, dones)
 
     def train_short_memory(self, state, action, reward, next_state, done):
@@ -45,9 +57,9 @@ class Agent:
 
     def get_action(self, state):
         # random moves
-        self.epsilon = 80 - self.n_games
+        self.epsilon = 1-self.n_games/10
         final_move = 0
-        if random.randint(0, 200) < self.epsilon:
+        if random.random() < self.epsilon:
             final_move = random.randint(0, 2)
         else:
             state0 = torch.tensor(state, dtype=torch.float)
@@ -76,7 +88,7 @@ def train():
         level.run()
 
         pygame.display.update()
-        clock.tick(60)
+        clock.tick(-1)
         # get old state
         state_old = agent.get_state(level)
 
@@ -98,10 +110,11 @@ def train():
             level.restart()
             agent.n_games += 1
             agent.train_long_memory()
+            #agent.train_short_memory(state_old, final_move, reward, state_new, done)
 
             if score > record:
                 record = score
-                # agent.model.save()
+                agent.model.save()
 
             print('Game', agent.n_games, 'Score,', score, 'Record:', record)
 
