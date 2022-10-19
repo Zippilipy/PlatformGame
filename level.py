@@ -1,6 +1,6 @@
 import pygame
 from tiles import Tile
-from settings import tile_size, screen_width, level_map, start_map, screen_height
+from settings import tile_size, screen_width, level_map, start_map, screen_height, level_map_test
 from player import Player
 import torch
 from collections import deque
@@ -94,25 +94,41 @@ class Level:
         end = int((xposingame + (screen_width - xposonscreen))/tile_size)
         ytile = int(((yposingame)/tile_size))
         xtile = int(round((xposingame)/tile_size))
-        array = []
-        arraystring = ''
+        array = [0]*209
+        #arraystring = ''
         row_index = 0
         col_index = start
+        #for row in layout:
+        #    for col in row:
+        #        if(col_index >= start and col_index <= end):
+        #            if(row_index == ytile and col_index == xtile):
+        #                arraystring += '2'
+        #            else:
+        #                arraystring += col
+        #        col_index += 1
+        #    array.append(arraystring)
+        #    print(arraystring)
+        #    arraystring = ''
+            # print(f'{row_index},{col_index}:{col}')
+        #    row_index += 1
+        #    col_index = 0
+        #print(len(level_map_test)/11)
+        #array = []
+        # array[0] =
+        counter = 0
         for row in layout:
             for col in row:
-                if(col_index >= start and col_index <= end):
-                    if(row_index == ytile and col_index == xtile):
-                        arraystring += 'P'
+                if (col_index >= start and col_index <= end):
+                    if (row_index == ytile and col_index == xtile):
+                        array[counter] = 2
                     else:
-                        arraystring += col
+                        array[counter] = int(col)
                 col_index += 1
-            array.append(arraystring)
-            print(arraystring)
-            arraystring = ''
-            # print(f'{row_index},{col_index}:{col}')
             row_index += 1
             col_index = 0
-        #print(array)
+        print(array)
+        print(len(array))
+
         return array
 
     def givereward(self):
@@ -152,9 +168,6 @@ class Level:
         self.horizontal_movement_collision()
         self.vertical_movement_collision()
         self.player.draw(self.display_surface)
-        self.get_state(self.player.sprite.rect.x, self.realxpos, self.player.sprite.rect.y, self.continue_level)
-        self.givereward()
-        self.restart()
         print(self.player.sprite.status)
         self.frames += 1
         print(self.reward)

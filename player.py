@@ -31,16 +31,14 @@ class Player(pygame.sprite.Sprite):
         if keys[pygame.K_UP] and self.on_ground:
             self.jump()
 
-        # input = random.randint(0, 2)
-
-        #if input == 0:
-        #    self.direction.x = 1
-        #elif input == 1:
-        #    self.direction.x = -1
-        #else:
-        #    self.direction.x = 0
-        #if input == 2 and self.on_ground:
-        #    self.jump()
+        if action == 0:
+            self.direction.x = 1
+        elif action == 1:
+            self.direction.x = -1
+        else:
+            self.direction.x = 0
+        if action == 2 and self.on_ground:
+            self.jump()
 
         return
 
@@ -64,5 +62,4 @@ class Player(pygame.sprite.Sprite):
 
 
     def update(self):
-        self.get_input(1)
         self.get_status()

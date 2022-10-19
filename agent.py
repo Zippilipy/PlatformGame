@@ -1,11 +1,13 @@
 import torch
 import random
-import numpy as np
+import pygame, sys
 from level import Level
 from collections import deque
 from player import Player
 from model import Linear_QNet, QTrainer
 from helper import plot
+from settings import start_map, level_map, screen_width, screen_height
+
 
 MAX_MEMORY = 100_000
 BATCH_SIZE = 1000
@@ -19,7 +21,7 @@ class Agent:
         self.epsilon = 0
         self.gamma = 0.9
         self.memory = deque(maxlen=MAX_MEMORY)
-        self.model = Linear_QNet(11, 256, 3)
+        self.model = Linear_QNet(209, 256, 3)
         self.trainer = QTrainer(self.model, lr=LR, gamma=self.gamma)
 
     def get_state(self, level):
@@ -31,7 +33,7 @@ class Agent:
 
     def train_long_memory(self):
         if len(self.memory) < BATCH_SIZE:
-            mini_sample = random.sample(self.memory, BATCH_SIZE)
+            mini_sample = random.choices(self.memory, k=BATCH_SIZE)
         else:
             mini_sample = self.memory
 
@@ -59,10 +61,22 @@ def train():
     plot_mean_scores = []
     total_score = 0
     record = 0
+    pygame.init()
+    clock = pygame.time.Clock()
     agent = Agent()
-    level = Level()
-    player = Player()
+    screen = pygame.display.set_mode((screen_width, screen_height))
+    level = Level(start_map, level_map, screen)
     while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+
+        screen.fill('black')
+        level.run()
+
+        pygame.display.update()
+        clock.tick(60)
         # get old state
         state_old = agent.get_state(level)
 
@@ -70,7 +84,7 @@ def train():
         final_move = agent.get_action(state_old)
 
         # perform move and get new state
-        reward, done, score = player.get_input(final_move)
+        reward, done, score = level.input(final_move)
         state_new = agent.get_state(level)
 
         # train short memory
