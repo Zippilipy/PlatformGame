@@ -31,7 +31,6 @@ class Level:
                 if col == 'X':
                     tile = Tile(pos=(x, y), size=tile_size, color='grey')
                     self.tiles.add(tile)
-                #print(f'{row_index},{col_index}:{col}')
                 if col == 'P':
                     player = Player(pos=(x, y))
                     self.player.add(player)
@@ -90,56 +89,40 @@ class Level:
 
     def get_state(self, xposonscreen, xposingame, yposingame, layout):
         start = int((xposingame - xposonscreen)/tile_size)
-        end = int((xposingame + (screen_width - xposonscreen))/tile_size)
+        end = int((xposingame - xposonscreen + screen_width)/tile_size)
         ytile = int(((yposingame)/tile_size))
         xtile = int(round((xposingame)/tile_size))
-        array = [0]*209
-        #arraystring = ''
+        array = [0]*220
         row_index = 0
         col_index = start
-        #for row in layout:
-        #    for col in row:
-        #        if(col_index >= start and col_index <= end):
-        #            if(row_index == ytile and col_index == xtile):
-        #                arraystring += '2'
-        #            else:
-        #                arraystring += col
-        #        col_index += 1
-        #    array.append(arraystring)
-        #    print(arraystring)
-        #    arraystring = ''
-            # print(f'{row_index},{col_index}:{col}')
-        #    row_index += 1
-        #    col_index = 0
-        #print(len(level_map_test)/11)
-        #array = []
-        # array[0] =
         counter = 0
         for row in layout:
             for col in row:
                 if (col_index >= start and col_index <= end):
                     if (row_index == ytile and col_index == xtile):
                         array[counter] = 2
+                        counter += 1
                     else:
                         array[counter] = int(col)
+                        counter += 1
                 col_index += 1
             row_index += 1
             col_index = 0
-        #print(array)
-        #print(len(array))
 
         return array
 
     def givereward(self):
         if self.realxpos > self.highestx:
+            self.reward = 10
             self.highestx = self.realxpos
-            self.reward += 1
-        elif self.realxpos < self.highestx and self.frames > self.realxpos + 120:
+        else:
+            self.reward = 0
+        if self.realxpos <= self.highestx and self.frames > self.realxpos + 120:
             self.over = True
-            self.reward = -10
+            self.reward = -100
         elif self.player.sprite.rect.y >= screen_height:
             self.over = True
-            self.reward = -10
+            self.reward = -100
 
     def input(self, action):
         self.player.sprite.get_input(action)
@@ -150,8 +133,8 @@ class Level:
     def restart(self):
         self.setup_level(start_map)
         self.world_shift = 0
-        self.realxpos = tile_size * 4.5
-        self.highestx = tile_size * 4.5
+        self.realxpos = tile_size*2.5
+        self.highestx = tile_size*2.5
         self.frames = 0
         self.over = False
         self.reward = 0
@@ -166,10 +149,4 @@ class Level:
         self.horizontal_movement_collision()
         self.vertical_movement_collision()
         self.player.draw(self.display_surface)
-        #print(self.player.sprite.status)
         self.frames += 1
-        print(self.frames)
-        print(self.realxpos)
-        print(self.over)
-        #print(self.reward)
-        #print(self.over)

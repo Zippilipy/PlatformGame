@@ -11,7 +11,7 @@ from settings import start_map, level_map, screen_width, screen_height
 
 MAX_MEMORY = 100000
 BATCH_SIZE = 1000
-LR = 0.001
+LR = 0.01
 
 
 class Agent:
@@ -21,7 +21,7 @@ class Agent:
         self.epsilon = 0
         self.gamma = 0.9
         self.memory = deque(maxlen=MAX_MEMORY)
-        self.model = Linear_QNet(209, 256, 3)
+        self.model = Linear_QNet(220, 256, 3)
         self.trainer = QTrainer(self.model, lr=LR, gamma=self.gamma)
 
     def get_state(self, level):
@@ -32,21 +32,10 @@ class Agent:
         self.memory.append((state, action, reward, next_state, done))
 
     def train_long_memory(self):
-        if len(self.memory) < BATCH_SIZE:
-            mini_sample = random.choices(self.memory, k=BATCH_SIZE)
+        if len(self.memory) > BATCH_SIZE:
+            mini_sample = random.sample(self.memory, BATCH_SIZE)
         else:
             mini_sample = self.memory
-
-
-        new_memory = []
-
-        memory_count = 1
-        for memory in self.memory:
-            if memory_count > len(self.memory) - 10:
-                new_memory.append(memory)
-            memory_count += 1
-
-        mini_sample = new_memory
 
         states, actions, rewards, next_states, dones = zip(*mini_sample)
 
@@ -57,8 +46,7 @@ class Agent:
 
     def get_action(self, state):
         # random moves
-        self.epsilon = 1-self.n_games/10
-        final_move = 0
+        self.epsilon = 1-self.n_games/500
         if random.random() < self.epsilon:
             final_move = random.randint(0, 2)
         else:

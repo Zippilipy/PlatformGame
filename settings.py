@@ -43,5 +43,5 @@ for line in level_map:
 # 46 lång
 
 tile_size = 64
-screen_width = 1200
+screen_width = 1216
 screen_height = len(level_map) * tile_size
