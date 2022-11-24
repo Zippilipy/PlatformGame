@@ -3,7 +3,6 @@ import random
 import pygame, sys
 from level import Level
 from collections import deque
-from player import Player
 from model import Linear_QNet, QTrainer
 from helper import plot
 from settings import start_map, level_map, screen_width, screen_height
@@ -11,7 +10,7 @@ from settings import start_map, level_map, screen_width, screen_height
 
 MAX_MEMORY = 100000
 BATCH_SIZE = 1000
-LR = 0.01
+LR = 0.00001
 
 
 class Agent:
@@ -46,7 +45,7 @@ class Agent:
 
     def get_action(self, state):
         # random moves
-        self.epsilon = 1-self.n_games/500
+        self.epsilon = 1-self.n_games/50
         if random.random() < self.epsilon:
             final_move = random.randint(0, 2)
         else:

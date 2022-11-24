@@ -20,16 +20,6 @@ class Player(pygame.sprite.Sprite):
         self.on_ground = False
 
     def get_input(self, action):
-        keys = pygame.key.get_pressed()
-
-        #if keys[pygame.K_RIGHT]:
-        #    self.direction.x = 1
-        #elif keys[pygame.K_LEFT]:
-        #    self.direction.x = -1
-        #else:
-        #    self.direction.x = 0
-        #if keys[pygame.K_UP] and self.on_ground:
-        #    self.jump()
 
         if action == 0:
             self.direction.x = 1
@@ -42,6 +32,15 @@ class Player(pygame.sprite.Sprite):
 
         return
 
+    def move(self):
+        keys = pygame.key.get_pressed()
+
+        if keys[pygame.K_RIGHT]:
+            self.direction.x = 1
+        elif keys[pygame.K_LEFT]:
+            self.direction.x = -1
+        if keys[pygame.K_UP] and self.on_ground:
+            self.jump()
     def get_status(self):
         if self.direction.y < 0:
             self.status = 'jump'
@@ -63,3 +62,4 @@ class Player(pygame.sprite.Sprite):
 
     def update(self):
         self.get_status()
+        self.move()
