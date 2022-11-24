@@ -140,12 +140,13 @@ class Level:
         self.reward = 0
 
 
-    def run(self):
+    def run(self, main= False):
         self.tiles.update(self.world_shift)
         self.tiles.draw(self.display_surface)
         self.scroll_x()
 
-        self.player.update()
+        if main:
+            self.player.update()
         self.horizontal_movement_collision()
         self.vertical_movement_collision()
         self.player.draw(self.display_surface)

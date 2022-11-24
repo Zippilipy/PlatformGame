@@ -16,7 +16,7 @@ def main():
                 sys.exit()
 
         screen.fill('black')
-        level.run()
+        level.run(main=True)
 
         pygame.display.update()
         clock.tick(60)

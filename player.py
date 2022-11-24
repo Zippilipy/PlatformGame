@@ -25,8 +25,6 @@ class Player(pygame.sprite.Sprite):
             self.direction.x = 1
         elif action == 1:
             self.direction.x = -1
-        else:
-           self.direction.x = 0
         if action == 2 and self.on_ground:
             self.jump()
 
@@ -39,6 +37,8 @@ class Player(pygame.sprite.Sprite):
             self.direction.x = 1
         elif keys[pygame.K_LEFT]:
             self.direction.x = -1
+        else:
+            self.direction.x = 0
         if keys[pygame.K_UP] and self.on_ground:
             self.jump()
     def get_status(self):
