@@ -13,8 +13,8 @@ class Level:
 
         self.continue_level = level_data
         self.world_shift = 0
-        self.realxpos = tile_size*2.5
-        self.highestx = tile_size*2.5
+        self.realxpos = tile_size*2
+        self.highestx = tile_size*2
         self.over = False
         self.frames = 0
         self.reward = 0
@@ -43,7 +43,7 @@ class Level:
         player_x = player.rect.centerx
         direction_x = player.direction.x
 
-        if player_x < screen_width * 0.25 and direction_x < 0:
+        if player_x < screen_width * 0.25 and direction_x < 0 and self.realxpos >= 288:
             self.world_shift = 8
             self.realxpos -= 8
             player.speed = 0
@@ -54,6 +54,10 @@ class Level:
         else:
             self.world_shift = 0
             player.speed = 8
+        if(self.realxpos <= 0 and direction_x < 0):
+            player.speed = 0
+            self.realxpos = 0
+            player.rect.left = 0
 
     def horizontal_movement_collision(self):
         player = self.player.sprite
@@ -88,17 +92,20 @@ class Level:
             player.on_ground = False
 
     def get_state(self, xposonscreen, xposingame, yposingame, layout):
-        start = int((xposingame - xposonscreen)/tile_size)
+        if(((xposingame - xposonscreen)/tile_size) < 0):
+            start = int(np.floor(((xposingame - xposonscreen)/tile_size)))
+        else:
+            start = int((xposingame - xposonscreen)/tile_size)
         end = int((xposingame - xposonscreen + screen_width)/tile_size)
         ytile = int(((yposingame)/tile_size))
         xtile = int(round((xposingame)/tile_size))
-        array = [0]*220
+        array = [0]*209
         row_index = 0
         col_index = start
         counter = 0
         for row in layout:
             for col in row:
-                if (col_index >= start and col_index <= end):
+                if (col_index >= start and col_index < end):
                     if (row_index == ytile and col_index == xtile):
                         array[counter] = 2
                         counter += 1
@@ -113,7 +120,7 @@ class Level:
 
     def givereward(self):
         if self.realxpos > self.highestx:
-            self.reward = 10
+            self.reward = 1
             self.highestx = self.realxpos
         else:
             self.reward = 0
@@ -133,8 +140,8 @@ class Level:
     def restart(self):
         self.setup_level(start_map)
         self.world_shift = 0
-        self.realxpos = tile_size*2.5
-        self.highestx = tile_size*2.5
+        self.realxpos = tile_size*2
+        self.highestx = tile_size*2
         self.frames = 0
         self.over = False
         self.reward = 0

@@ -20,7 +20,7 @@ class Agent:
         self.epsilon = 0
         self.gamma = 0.9
         self.memory = deque(maxlen=MAX_MEMORY)
-        self.model = Linear_QNet(220, 256, 3)
+        self.model = Linear_QNet(209, 256, 3)
         self.trainer = QTrainer(self.model, lr=LR, gamma=self.gamma)
 
     def get_state(self, level):
@@ -45,13 +45,16 @@ class Agent:
 
     def get_action(self, state):
         # random moves
-        self.epsilon = 1-self.n_games/50
+        self.epsilon = 1-self.n_games/1000
         if random.random() < self.epsilon:
             final_move = random.randint(0, 2)
         else:
             state0 = torch.tensor(state, dtype=torch.float)
             prediction = self.model(state0)
             final_move = torch.argmax(prediction).item()
+            if(final_move != 0):
+                print("Something different was made: ")
+                print(final_move)
         return final_move
 
 
@@ -103,7 +106,7 @@ def train():
                 record = score
                 agent.model.save()
 
-            print('Game', agent.n_games, 'Score,', score, 'Record:', record)
+            #print('Game', agent.n_games, 'Score,', score, 'Record:', record)
 
             plot_scores.append(score)
             total_score += score

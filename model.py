@@ -38,6 +38,7 @@ class QTrainer:
         next_state = torch.tensor(next_state, dtype=torch.float)
         action = torch.tensor(action, dtype=torch.float)
         reward = torch.tensor(reward, dtype=torch.float)
+        #print(reward)
 
         if len(state.shape) == 1:
             state = torch.unsqueeze(state, 0)
@@ -53,9 +54,11 @@ class QTrainer:
             Q_new = reward[idx]
             if not done[idx]:
                 Q_new = reward[idx] + self.gamma * torch.max(self.model(next_state[idx]))
+                #print(self.model(next_state[idx]))
+                #print(torch.max(self.model(next_state[idx])))
 
-            #target[idx][min(torch.argmax(action).item(), len(target[idx])-1)] = Q_new
             target[idx][torch.argmax(action[idx]).item()] = Q_new
+
 
         self.optimizer.zero_grad()
         loss = self.criterion(target, pred)

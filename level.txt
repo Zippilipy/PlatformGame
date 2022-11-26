@@ -6,6 +6,6 @@
               XX                 XX XX XX     
             XX              XX   XX    XX     
   P    X  XXXX    XX  XX    XX   XX    XX     
-       X  XXXX    XX  XXX        XX    XX     
+       X  XXXX    XX  XXX
 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
