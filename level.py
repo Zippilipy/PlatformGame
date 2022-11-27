@@ -6,6 +6,7 @@ import torch
 from collections import deque
 import numpy as np
 
+
 class Level:
     def __init__(self, start_data, level_data, surface):
         self.display_surface = surface
@@ -13,8 +14,8 @@ class Level:
 
         self.continue_level = level_data
         self.world_shift = 0
-        self.realxpos = tile_size*2
-        self.highestx = tile_size*2
+        self.realxpos = tile_size * 2
+        self.highestx = tile_size * 2
         self.over = False
         self.frames = 0
         self.reward = 0
@@ -54,7 +55,7 @@ class Level:
         else:
             self.world_shift = 0
             player.speed = 8
-        if(self.realxpos <= 0 and direction_x < 0):
+        if self.realxpos <= 0 and direction_x < 0:
             player.speed = 0
             self.realxpos = 0
             player.rect.left = 0
@@ -72,7 +73,6 @@ class Level:
                 elif player.direction.x > 0:
                     player.rect.right = sprite.rect.left
                     self.realxpos -= player.direction.x * player.speed
-
 
     def vertical_movement_collision(self):
         player = self.player.sprite
@@ -92,14 +92,14 @@ class Level:
             player.on_ground = False
 
     def get_state(self, xposonscreen, xposingame, yposingame, layout):
-        if(((xposingame - xposonscreen)/tile_size) < 0):
-            start = int(np.floor(((xposingame - xposonscreen)/tile_size)))
+        if (((xposingame - xposonscreen) / tile_size) < 0):
+            start = int(np.floor(((xposingame - xposonscreen) / tile_size)))
         else:
-            start = int((xposingame - xposonscreen)/tile_size)
-        end = int((xposingame - xposonscreen + screen_width)/tile_size)
-        ytile = int(((yposingame)/tile_size))
-        xtile = int(round((xposingame)/tile_size))
-        array = [0]*209
+            start = int((xposingame - xposonscreen) / tile_size)
+        end = int((xposingame - xposonscreen + screen_width) / tile_size)
+        ytile = int(((yposingame) / tile_size))
+        xtile = int(round((xposingame) / tile_size))
+        array = [0] * 209
         row_index = 0
         col_index = start
         counter = 0
@@ -136,18 +136,16 @@ class Level:
         self.givereward()
         return self.reward, self.over, self.highestx
 
-
     def restart(self):
         self.setup_level(start_map)
         self.world_shift = 0
-        self.realxpos = tile_size*2
-        self.highestx = tile_size*2
+        self.realxpos = tile_size * 2
+        self.highestx = tile_size * 2
         self.frames = 0
         self.over = False
         self.reward = 0
 
-
-    def run(self, main= False):
+    def run(self, main=False):
         self.tiles.update(self.world_shift)
         self.tiles.draw(self.display_surface)
         self.scroll_x()

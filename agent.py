@@ -9,16 +9,18 @@ from settings import start_map, level_map, screen_width, screen_height
 
 
 MAX_MEMORY = 100000
-BATCH_SIZE = 1000
-LR = 0.00001
+BATCH_SIZE = 32
+LR = 0.00025
 
 
 class Agent:
 
     def __init__(self):
         self.n_games = 0
-        self.epsilon = 0
         self.gamma = 0.9
+        self.exploration_rate = 1
+        self.exploration_rate_decay = 0.99999975
+        self.exploration_rate_min = 0.1
         self.memory = deque(maxlen=MAX_MEMORY)
         self.model = Linear_QNet(209, 256, 3)
         self.trainer = QTrainer(self.model, lr=LR, gamma=self.gamma)
@@ -45,16 +47,18 @@ class Agent:
 
     def get_action(self, state):
         # random moves
-        self.epsilon = 1-self.n_games/1000
-        if random.random() < self.epsilon:
+        if random.random() < self.exploration_rate:
             final_move = random.randint(0, 2)
         else:
             state0 = torch.tensor(state, dtype=torch.float)
             prediction = self.model(state0)
             final_move = torch.argmax(prediction).item()
-            if(final_move != 0):
+            if final_move != 0:
                 print("Something different was made: ")
                 print(final_move)
+        # decrease exploration_rate
+        self.exploration_rate *= self.exploration_rate_decay
+        self.exploration_rate = max(self.exploration_rate_min, self.exploration_rate)
         return final_move
 
 
