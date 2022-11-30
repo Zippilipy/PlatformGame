@@ -110,7 +110,7 @@ class Level:
                         array[counter] = 2
                         counter += 1
                     else:
-                        array[counter] = int(col)
+                        array[counter] = int(col)/2
                         counter += 1
                 col_index += 1
             row_index += 1
@@ -120,16 +120,19 @@ class Level:
 
     def givereward(self):
         if self.realxpos > self.highestx:
-            self.reward = 1
+            self.reward = 10
             self.highestx = self.realxpos
         else:
-            self.reward = 0
-        if self.realxpos <= self.highestx and self.frames > self.realxpos + 120:
+            self.reward = -1
+        if self.realxpos <= self.highestx and self.frames > self.realxpos + 1000:
             self.over = True
             self.reward = -100
         elif self.player.sprite.rect.y >= screen_height:
             self.over = True
             self.reward = -100
+        if self.realxpos >= 2944:
+            self.over = True
+            self.reward = 100
 
     def input(self, action):
         self.player.sprite.get_input(action)

@@ -1,6 +1,7 @@
 import torch
 import random
 import pygame, sys
+import numpy as np
 from level import Level
 from collections import deque
 from model import Linear_QNet, QTrainer
@@ -22,12 +23,12 @@ class Agent:
         self.exploration_rate_decay = 0.99999975
         self.exploration_rate_min = 0.1
         self.memory = deque(maxlen=MAX_MEMORY)
-        self.model = Linear_QNet(209, 256, 3)
+        self.model = Linear_QNet(209, 512, 3)
         self.trainer = QTrainer(self.model, lr=LR, gamma=self.gamma)
 
     def get_state(self, level):
         state = level.get_state(level.player.sprite.rect.x, level.realxpos, level.player.sprite.rect.y, level.continue_level)
-        return state
+        return np.array(state, dtype=float)
 
     def remember(self, state, action, reward, next_state, done):
         self.memory.append((state, action, reward, next_state, done))
@@ -39,6 +40,16 @@ class Agent:
             mini_sample = self.memory
 
         states, actions, rewards, next_states, dones = zip(*mini_sample)
+        """print("1")
+        print(states)
+        print("2")
+        print(actions)
+        print("3")
+        print(rewards)
+        print("4")
+        print(next_states)
+        print("5")
+        print(dones)"""
 
         self.trainer.train_step(states, actions, rewards, next_states, dones)
 
@@ -60,6 +71,9 @@ class Agent:
         self.exploration_rate *= self.exploration_rate_decay
         self.exploration_rate = max(self.exploration_rate_min, self.exploration_rate)
         return final_move
+
+    def get_explore_value(self):
+        return self.exploration_rate
 
 
 def train():
@@ -102,6 +116,7 @@ def train():
         if done:
             # train long memory, plot result
             level.restart()
+            print(agent.get_explore_value())
             agent.n_games += 1
             agent.train_long_memory()
             #agent.train_short_memory(state_old, final_move, reward, state_new, done)

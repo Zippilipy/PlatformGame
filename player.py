@@ -2,12 +2,13 @@ import pygame
 import random
 from settings import tile_size
 
+
 class Player(pygame.sprite.Sprite):
     def __init__(self, pos):
         super().__init__()
-        self.image = pygame.Surface((tile_size/2, tile_size))
+        self.image = pygame.Surface((tile_size / 2, tile_size))
         self.image.fill('red')
-        self.rect = self.image.get_rect(topleft = pos)
+        self.rect = self.image.get_rect(topleft=pos)
 
         # player movement
         self.direction = pygame.math.Vector2(0, 0)
@@ -22,9 +23,9 @@ class Player(pygame.sprite.Sprite):
     def get_input(self, action):
 
         if action == 0:
-            self.direction.x = 1
-        elif action == 1:
             self.direction.x = -1
+        elif action == 1:
+            self.direction.x = 1
         if action == 2 and self.on_ground:
             self.jump()
 
@@ -41,6 +42,7 @@ class Player(pygame.sprite.Sprite):
             self.direction.x = 0
         if keys[pygame.K_UP] and self.on_ground:
             self.jump()
+
     def get_status(self):
         if self.direction.y < 0:
             self.status = 'jump'
@@ -58,7 +60,6 @@ class Player(pygame.sprite.Sprite):
 
     def jump(self):
         self.direction.y = self.jump_speed
-
 
     def update(self):
         self.get_status()
